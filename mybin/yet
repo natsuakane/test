@@ -1,0 +1,27 @@
+#!/bin/bash
+
+function usage {
+	cat <<EOM
+Usage: $(basename "$0") [--help]
+EOM
+}
+read_file_name=""
+if [[ $1 = "" ]]; then
+     echo "yet: fatal error: no input files"
+     echo "compilation terminated."
+     exit
+else
+	read_file_name=$1
+fi
+
+shift
+while getopts ":h" optKey; do
+	case "$optKey" in
+		'-h'|'--help'|*)
+			usage
+			exit 1
+			;;
+	esac
+done
+
+yet_VM $read_file_name

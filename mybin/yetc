@@ -1,0 +1,48 @@
+#!/bin/bash
+
+function usage {
+	cat <<EOM
+Usage: $(basename "$0") [--help] [-L] [p] [-o filename]
+EOM
+}
+read_file_name=""
+if [[ $1 = "" ]]; then
+	echo "yetc: fatal error: no input files"
+	echo "compilation terminated."
+	exit
+else
+	read_file_name="$(pwd)/$1"
+fi
+	
+out_file_name="a.ye"
+out_code_type=0 #<-ye
+is_print=0
+
+function set_outfile() {
+	out_file_name="$OPTARG"
+}
+
+shift
+while getopts ":Lpo:h" optKey; do
+	case "$optKey" in
+    	L)
+			if [[ $out_file_name = "a.ye" ]]; then
+				out_file_name="a.lisp"
+			fi
+			out_code_type=1 #<-lisp
+			;;
+		p)
+			is_print=1	
+			;;
+		o)
+			set_outfile
+			;;
+		'-h'|'--help'|* )
+			usage
+			exit 1
+			;;
+	esac
+done
+
+#echo "${read_file_name} -> $(pwd)/${out_file_name}"
+yet_compiler $read_file_name $(pwd)/$out_file_name $out_code_type $is_print
